@@ -1,23 +1,29 @@
 // Данные для автозаполнения
 const autofillData = {
-    repository: "https://gitlab.wildberries.ru/content/content-card"
+    repository: "https://gitlab.wildberries.ru/content/content-card",
+    tokenPurpose: "Расширение токена необходимо для управления новым атрибутом app-2-app"
 };
 
-// Функция для заполнения поля формы с эмуляцией пользовательского ввода
-function fillRepositoryField() {
+// Функция для заполнения полей формы
+function fillFields() {
+    // Поле 'Репозиторий сервиса'
     const repositoryField = document.getElementById(":rq:");
     if (repositoryField) {
         repositoryField.value = autofillData.repository;
-
-        // Создаем и инициируем событие input, чтобы система обработала изменение
-        const inputEvent = new Event('input', { bubbles: true });
-        repositoryField.dispatchEvent(inputEvent);
-
         console.log("Поле 'Репозиторий сервиса' заполнено автоматически.");
     } else {
         console.log("Поле 'Репозиторий сервиса' не найдено.");
     }
+
+    // Поле 'Назначение токена'
+    const tokenPurposeField = document.getElementById(":rm:");
+    if (tokenPurposeField) {
+        tokenPurposeField.value = autofillData.tokenPurpose;
+        console.log("Поле 'Назначение токена' заполнено автоматически.");
+    } else {
+        console.log("Поле 'Назначение токена' не найдено.");
+    }
 }
 
-// Добавляем задержку, чтобы убедиться, что поле полностью загружено
-setTimeout(fillRepositoryField, 3000); // Задержка 3 секунды
+// Добавляем задержку, чтобы убедиться, что все поля полностью загружены
+setTimeout(fillFields, 3000); // Задержка 3 секунды
