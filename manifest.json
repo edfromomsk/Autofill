@@ -1,0 +1,13 @@
+{
+    "manifest_version": 3,
+    "name": "AutoFill Repository Field",
+    "version": "1.0",
+    "description": "Автозаполнение поля 'Репозиторий сервиса' на странице.",
+    "permissions": ["activeTab", "scripting"],
+    "content_scripts": [
+      {
+        "matches": ["https://sd2.wb.ru/*"],
+        "js": ["content.js"]
+      }
+    ]
+  }
