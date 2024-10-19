@@ -1,25 +1,15 @@
-// Лог при загрузке контент-скрипта
-console.log("Content script loaded!");
-
-// Функция для получения текущего URL страницы
+// Получает урл страницы
 function getPageUrl() {
-    return window.location.href.split('?')[0]; // Берём URL без параметров для точности
+    return window.location.href.split('?')[0]; // без параметров
 }
 
-// Функция для сохранения данных на основе URL и id полей
+// Сохраняет данные на основе URL и id полей в локал сторедж
 function saveFieldData(event) {
-    const fieldId = event.target.id;  // Получаем id элемента
-    const fieldValue = event.target.value;  // Получаем введенное значение
-    const pageUrl = getPageUrl(); // Получаем текущий URL страницы
+    const fieldId = event.target.id;  // Получает id элемента
+    const fieldValue = event.target.value;  // Получает введенное значение
+    const pageUrl = getPageUrl(); // Получает урл
 
-    console.log(`Изменение в поле с id "${fieldId}" на странице "${pageUrl}": ${fieldValue}`);
-
-    if (!fieldId) {
-        console.log("Поле без id, пропускаем сохранение.");
-        return;
-    }
-
-    // Сохраняем данные на основе URL страницы
+    // Сохраняет данные
     chrome.storage.local.get({ savedPages: {} }, function(result) {
         const savedPages = result.savedPages || {};
         if (!savedPages[pageUrl]) {
@@ -27,21 +17,19 @@ function saveFieldData(event) {
         }
         savedPages[pageUrl][fieldId] = fieldValue;
         
-        chrome.storage.local.set({ savedPages: savedPages }, function() {
-            console.log(`Поле с id "${fieldId}" на странице "${pageUrl}" сохранено со значением "${fieldValue}".`);
-        });
+        chrome.storage.local.set({ savedPages: savedPages });
     });
 }
 
-// Функция для автозаполнения полей на основе URL
+// Автозаполнение полей
 function fillFields() {
-    const pageUrl = getPageUrl(); // Получаем текущий URL страницы
+    const pageUrl = getPageUrl(); // Получает текущий URL страницы
 
     chrome.storage.local.get({ savedPages: {} }, function(result) {
         const savedPages = result.savedPages || {};
-        const pageData = savedPages[pageUrl] || {}; // Получаем сохранённые данные для текущей страницы
+        const pageData = savedPages[pageUrl] || {}; // Получает сохранённые данные для текущей страницы
 
-        console.log(`Заполняем данные для страницы "${pageUrl}". Найдено полей: ${Object.keys(pageData).length}`);
+        let fieldsFound = false;
 
         Object.keys(pageData).forEach(fieldId => {
             const field = document.getElementById(fieldId);
@@ -49,34 +37,31 @@ function fillFields() {
                 field.value = pageData[fieldId];
                 const inputEvent = new Event('input', { bubbles: true });
                 field.dispatchEvent(inputEvent);
-                console.log(`Поле с id "${fieldId}" заполнено автоматически значением "${pageData[fieldId]}"`);
-            } else {
-                console.log(`Поле с id "${fieldId}" не найдено на странице.`);
+                fieldsFound = true;
             }
         });
-    });
-}
 
-// Функция для отслеживания изменений в полях
-function trackFieldChanges() {
-    const inputs = document.querySelectorAll('input, textarea');
-    console.log(`Найдено ${inputs.length} полей для отслеживания.`);
-
-    inputs.forEach(input => {
-        if (input.id) {
-            input.addEventListener('input', saveFieldData);
-            console.log(`Добавлено отслеживание для поля с id "${input.id}"`);
+        if (fieldsFound) {
+            console.log("Поля заполнены.");
         } else {
-            console.log("Поле без id, отслеживание не добавлено.");
+            console.log("Не удалось найти поля для заполнения.");
         }
     });
 }
 
-// Добавляем задержку для полной загрузки элементов страницы
-setTimeout(() => {
-    // Заполняем поля после загрузки страницы
-    fillFields();
+// Отслеживание изменений в полях
+function trackFieldChanges() {
+    const inputs = document.querySelectorAll('input, textarea');
 
-    // Добавляем отслеживание изменений в полях
+    inputs.forEach(input => {
+        if (input.id) {
+            input.addEventListener('input', saveFieldData);
+        }
+    });
+}
+
+// Задержка для полной загрузки страницы
+setTimeout(() => {
+    fillFields();
     trackFieldChanges();
-}, 3000); // Задержка 3 секунды
+}, 500);

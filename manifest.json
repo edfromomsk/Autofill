@@ -1,17 +1,21 @@
 {
-    "manifest_version": 3,
-    "name": "Auto Save and Fill",
-    "version": "1.0",
-    "description": "Отслеживание изменений в полях, сохранение и автозаполнение при следующем посещении.",
-    "permissions": [
-      "activeTab",
-      "storage",
-      "scripting"
-    ],
-    "content_scripts": [
-      {
-        "matches": ["<all_urls>"],
-        "js": ["content.js"]
-      }
-    ]
+  "manifest_version": 3,
+  "name": "Auto Save and Fill",
+  "version": "1.0",
+  "description": "Отслеживание изменений в полях, сохранение и автозаполнение при следующем посещении.",
+  "permissions": [
+    "activeTab",
+    "storage"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ],
+  "icons": {
+    //"16": "icon_16.png",
+    //"48": "icon_48.png",
+    "128": "icon_128.png"
   }
+}
