@@ -49,6 +49,19 @@ function fillFields() {
     });
 }
 
+// Автозаполнение для поля с placeholder "999 999-99-99"
+function autoFillSpecificField() {
+    const inputField = document.querySelector('input[placeholder="999 999-99-99"]');
+    if (inputField) {
+        inputField.value = "9168277080"; // Автозаполняем указанное значение
+        const inputEvent = new Event('input', { bubbles: true });
+        inputField.dispatchEvent(inputEvent); // Программное событие для триггера изменения
+        console.log('Поле с placeholder "999 999-99-99" заполнено значением "9168277080".');
+    } else {
+        console.log('Поле с placeholder "999 999-99-99" не найдено.');
+    }
+}
+
 // Отслеживание изменений в полях
 function trackFieldChanges() {
     const inputs = document.querySelectorAll('input, textarea');
@@ -63,5 +76,6 @@ function trackFieldChanges() {
 // Задержка для полной загрузки страницы
 setTimeout(() => {
     fillFields();
+    autoFillSpecificField(); // Добавляем автозаполнение для поля с placeholder
     trackFieldChanges();
 }, 500);
